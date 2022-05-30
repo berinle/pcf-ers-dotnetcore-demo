@@ -33,9 +33,7 @@ jobs:
         run: dotnet publish -r linux-x64
       - name: Install cf cli, auth and push
         run: |
-          curl -sL 'https://packages.cloudfoundry.org/stable?release=linux64-binary&version=6.53.0&source=github-rel' | tar -xzv \
-          && chmod 0755 cf
-          
+          curl -sL 'https://packages.cloudfoundry.org/stable?release=linux64-binary&version=6.53.0&source=github-rel' | tar -xzv && chmod 0755 cf          
           cf login -a ${{ secrets.CF_API }} --sso-passcode ${{ secrets.CF_PASSCODE }} -o ${{ secrets.CF_ORG }} -s ${{ secrets.CF_SPACE }}
           cf push
       # - name: Upload artifact
