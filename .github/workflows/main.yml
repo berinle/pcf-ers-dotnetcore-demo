@@ -15,7 +15,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
+  build-publish-deploy:
 
     environment: dhaka
     runs-on: ubuntu-latest
@@ -31,6 +31,13 @@ jobs:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: Build and publish
         run: dotnet publish -r linux-x64
+      - name: List files
+        run: cp manifest.yml . && ls -lrt
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ers
+          path: .
       - name : Deploy to Cloudfoundry
         uses: berinle/cf-push@main
         with:
