@@ -32,6 +32,7 @@ jobs:
         run: dotnet publish -r linux-x64
         
   deploy:
+    needs: [build]
     runs-on: ubuntu-latest
     environment: dhaka
     steps:
