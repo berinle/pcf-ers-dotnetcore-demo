@@ -31,22 +31,28 @@ jobs:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: Build and publish
         run: dotnet publish -r linux-x64
-      - name: List files
-        run: ls -lRt
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: ers
-          path: .
-      - name : Deploy to Cloudfoundry
-        uses: berinle/cf-push@main
-        with:
-          api:      ${{ secrets.CF_API }}
-          org:      ${{ secrets.CF_ORG }}
-          space:    ${{ secrets.CF_SPACE }}
-          passcode: ${{ secrets.CF_PASSCODE }}
-          manifest: manifest.yml
-          validate: true          # set to false if you don't want to validate ssl
+      - name: Install cf cli, auth and push
+        run: |
+          curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+          curl -sL 'https://packages.cloudfoundry.org/stable?release=linux64-binary&version=6.53.0&source=github-rel' | tar -xzv \
+          && chmod 0755 cf
+          
+          cf login -a ${{ secrets.CF_API }} --sso-passcode ${{ secrets.CF_PASSCODE }} -o ${{ secrets.CF_ORG }} -s ${{ secrets.CF_SPACE }}
+          cf push
+      # - name: Upload artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ers
+      #     path: .
+      # - name : Deploy to Cloudfoundry
+      #   uses: berinle/cf-push@main
+      #   with:
+      #     api:      ${{ secrets.CF_API }}
+      #     org:      ${{ secrets.CF_ORG }}
+      #     space:    ${{ secrets.CF_SPACE }}
+      #     passcode: ${{ secrets.CF_PASSCODE }}
+      #     manifest: manifest.yml
+      #     validate: true          # set to false if you don't want to validate ssl
         
   # deploy:
   #   needs: [build]
