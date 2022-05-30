@@ -32,7 +32,7 @@ jobs:
       - name: Build and publish
         run: dotnet publish -r linux-x64
       - name: List files
-        run: cp manifest.yml . && ls -lrt
+        run: ls -lRt
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
